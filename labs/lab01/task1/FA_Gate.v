@@ -1,25 +1,25 @@
 // FA_Gate.v
-// Gate-level model of a 1-bit full adder. No delays yet -- that starts in
-// Task 2. This task is purely about gate ordering.
-//
-// Part (a): leave this file exactly as it is, compile, and simulate.
-// Part (b): AFTER completing part (a), come back and reorder the five gate
-//           instantiations below into any different sequence, then
-//           re-simulate with the same tb.v and compare.
+// Gate-level structural full adder (Task 1b)
+// Same logic as Task 1a, but the five gate instantiations are written
+// in a different order: the final 'or' is now listed first, and the
+// first 'xor' is now listed last.
 
-module FA_Gate(
-  input  a,
-  input  b,
-  input  cin,
-  output sum,
-  output cout
+module FA_Gate (
+    input  a,
+    input  b,
+    input  cin,
+    output sum,
+    output cout
 );
-  wire ps, pc1, pc2;
 
-  xor (ps,  a,   b);
-  and (pc1, a,   b);
-  xor (sum, cin, ps);
-  and (pc2, cin, ps);
-  or  (cout, pc1, pc2);
+  wire p1;   // p1 = a ^ b   (intermediate propagate signal)
+  wire c1;   // c1 = a & b
+  wire c2;   // c2 = p1 & cin
+
+  or  (cout, c1, c2);
+  and (c2, p1, cin);
+  and (c1, a, b);
+  xor (sum, p1, cin);
+  xor (p1, a, b);
 
 endmodule
